@@ -1,7 +1,7 @@
 import { googleAuthProvider, auth } from "../firebase/firebaseConfig";
 
 import { types } from "../types/types"
-import { signInWithPopup } from 'firebase/auth';
+import { signInWithPopup, createUserWithEmailAndPassword, updateProfile } from 'firebase/auth';
 
 export  const startLoginEmailPassword = (email, password)=>{
     return (dispatch) => {
@@ -12,6 +12,21 @@ export  const startLoginEmailPassword = (email, password)=>{
 
     }
 }
+
+export const startRegister = (name, email, password) =>{
+    return (dispatch)=>{
+        createUserWithEmailAndPassword(auth, email, password)
+            .then(async ({ user }) => {
+                await updateProfile(user, {displayName:name})
+                // await user.updateProfile({displayName:name})
+                dispatch(
+                    login(user.uid, user.displayName)
+                )
+            }).catch( e => {
+                console.log(e);
+            })
+    }
+} 
 
 export const startGoogleLogin = () => {
     return (dispatch) => {

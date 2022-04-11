@@ -6,6 +6,7 @@ import {BrowserRouter, Route, Routes} from 'react-router-dom'
 import { JournalScreen } from '../components/journal/JournalScreen'
 import { auth } from '../firebase/firebaseConfig'
 import { login } from '../helpers/auth'
+import { startLoginNotes } from '../helpers/notes'
 import { AuthRouter } from './AuthRouter'
 import { PrivateRoute } from './PrivateRoutes'
 import { PublicRoute } from './PublicRoutes'
@@ -20,13 +21,16 @@ export const AppRouter = () => {
     onAuthStateChanged(auth, (user)=>{
       if (user?.uid) {
         dispatch( login(user.uid, user.displayName) )
+
+        dispatch(startLoginNotes(user.uid))
+
       }
       setChecking(false)
     })
   }, [dispatch, setChecking])
 
   if (checking) {
-    return <h1>Espere...</h1>
+    return <h1>Wait...</h1>
   }
   
 
